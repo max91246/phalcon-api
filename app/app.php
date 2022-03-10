@@ -24,9 +24,13 @@ $app->notFound(function () use($app) {
 $app->get(
     "/api/userLike/{id}",
     function ($id) use ($app) {
-        $phql = "SELECT * FROM OneUserLikes order by id DESC LIMIT 10";
+        $phql = "SELECT * FROM OneUserLikes WHERE user_id = :user_id: order by id DESC LIMIT 10";
 
-        $userLikes = $app->modelsManager->executeQuery($phql);
+        $params = [
+            'user_id' => $id
+        ];
+
+        $userLikes = $app->modelsManager->executeQuery($phql, $params);
 
         $data = [];
 
@@ -38,6 +42,12 @@ $app->get(
             ];
         }
 
-        echo json_encode($data);
+        $response = [
+            'code' => 200,
+            'message' => '请求正常',
+            'data' => $data
+        ];
+        
+        echo json_encode($response);
     }
 );
